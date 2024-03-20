@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 
 from bs4 import BeautifulSoup
 from sqlalchemy import Result, select
@@ -12,14 +12,16 @@ URL = "https://www.the-race.com/formula-1/"
 
 
 async def get_latest_articles():
-    response = requests.get(url=URL)
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(url=URL)
     soup = BeautifulSoup(response.text, "lxml")
-    slugs = soup.find_all("a", class_="archive_width")
-    print(slugs)
-
-get_latest_articles()
-
-# вытаскивает из супа список слагов и разворачивает его, возвращает список
+    articles = soup.find("div", class_="archive-width").find_all(
+        class_="entry-title"
+    )
+    slugs = [
+        article.find("a").get("href").split("/")[-2] for article in articles
+    ][::-1]
+    return slugs
 
 
 async def get_articles_from_db():
@@ -47,4 +49,6 @@ async def refresh_db_articles(slug):
 
 
 async def initial_scraping():
-    pass
+    slugs = await get_articles_from_db()
+    for slug in slugs:
+        await save_article_to_db(slug=slug)

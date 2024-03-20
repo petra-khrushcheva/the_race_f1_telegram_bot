@@ -38,8 +38,11 @@ async def command_help_handler(message: Message) -> None:
 
 @dp.message()
 async def any_message_handler(message: Message) -> None:
+    """
+    This handler receives any other messages
+    """
     link_button = InlineKeyboardButton(
-        text="The Race", url="https://www.the-race.com/formula-1"
+        text="The Race", url="https://www.the-race.com/formula-1/"
     )
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[link_button]])
     try:

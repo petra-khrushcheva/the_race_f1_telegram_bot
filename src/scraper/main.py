@@ -1,14 +1,6 @@
-import requests
-from bs4 import BeautifulSoup
-
-URL = "https://www.the-race.com/formula-1"
-
-response = requests.get(url=URL)
-
-soup = BeautifulSoup(response.text, "lxml")
 
 
-def check_updates():
+def check_for_updates():
     pass
 #  new_articles = []
 #  old_articles = []
