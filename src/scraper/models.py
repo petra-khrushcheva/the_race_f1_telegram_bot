@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped
 
-from src.core.basemodels import Base
+from core.basemodels import Base
 
 
 class Article(Base):
