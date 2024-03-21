@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.models import ChatID
 from bot.main import bot
 from core.database import get_session
-from scraper.services import get_articles_from_db
+from scraper.models import Article
 
 
 async def save_chat_id_to_db(chat_id: int):
@@ -22,6 +22,14 @@ async def save_chat_id_to_db(chat_id: int):
 async def get_chat_ids():
     session: AsyncSession = get_session()
     result: Result = await session.execute(select(ChatID.chat_id))
+    return result.scalars().all()
+
+
+async def get_articles_from_db():
+    session: AsyncSession = get_session()
+    result: Result = await session.execute(
+        select(Article.slug).order_by(Article.created_at)
+    )
     return result.scalars().all()
 
 

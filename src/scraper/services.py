@@ -1,7 +1,7 @@
 import aiohttp
 
 from bs4 import BeautifulSoup
-from sqlalchemy import Result, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from scraper.models import Article
@@ -24,14 +24,6 @@ async def get_latest_articles():
     return slugs
 
 
-async def get_articles_from_db():
-    session: AsyncSession = get_session()
-    result: Result = await session.execute(
-        select(Article.slug).order_by(Article.created_at)
-    )
-    return result.scalars().all()
-
-
 async def save_article_to_db(slug):
     session: AsyncSession = get_session()
     new_article = Article(slug=slug)
@@ -41,7 +33,7 @@ async def save_article_to_db(slug):
 
 async def refresh_db_articles(slug):
     session: AsyncSession = get_session()
-    oldest_article = session.execute(
+    oldest_article = await session.execute(
         select(Article).order_by(Article.created_at).limit(1)
     )
     await session.delete(oldest_article)
@@ -49,6 +41,6 @@ async def refresh_db_articles(slug):
 
 
 async def initial_scraping():
-    slugs = await get_articles_from_db()
+    slugs = await get_latest_articles()
     for slug in slugs:
         await save_article_to_db(slug=slug)
