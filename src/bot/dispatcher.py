@@ -29,7 +29,7 @@ async def command_help_handler(message: Message) -> None:
     try:
         await message.answer(
             "Этот бот присылает вам новые статьи о Формуле 1 с сайта "
-            "The Race по мере их выхода"
+            "The Race по мере их выхода. 🏎️"
         )
     except TelegramForbiddenError:
         pass

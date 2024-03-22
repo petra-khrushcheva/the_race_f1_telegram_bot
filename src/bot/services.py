@@ -2,6 +2,7 @@ import asyncio
 
 from aiogram.types import Message
 from aiogram.exceptions import TelegramForbiddenError
+from aiogram.utils.markdown import hlink
 from sqlalchemy import Result, select
 
 from bot.models import ChatID
@@ -34,25 +35,26 @@ async def get_articles_from_db():
         return result.scalars().all()
 
 
+async def send_article(chat_id, slug):
+    try:
+        await bot.send_message(
+            chat_id=chat_id,
+            text=hlink(
+                url=f"https://www.the-race.com/formula-1/{slug}/", title="🏎️"
+            ),
+        )
+    except TelegramForbiddenError:
+        pass
+
+
 async def send_initial_articles(message: Message):
     slugs = await get_articles_from_db()
     for slug in slugs:
-        try:
-            await message.answer(
-                text=f"https://www.the-race.com/formula-1/{slug}/"
-            )
-        except TelegramForbiddenError:
-            pass
+        await send_article(chat_id=message.chat.id, slug=slug)
 
 
 async def send_new_article(slug):
-    chat_ids = get_chat_ids()
+    chat_ids = await get_chat_ids()
     for chat_id in chat_ids:
-        try:
-            await bot.send_message(
-                chat_id=chat_id,
-                text=f"https://www.the-race.com/formula-1/{slug}/",
-            )
-            await asyncio.sleep(0.05)
-        except TelegramForbiddenError:
-            pass
+        await send_article(chat_id=chat_id, slug=slug)
+        await asyncio.sleep(0.05)
