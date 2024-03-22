@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+
+  db:
+    container_name: db
+    image: postgres
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    # volumes:
+    #   - pgdata:/var/lib/postgresql/data
+
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+
+  web:
+    container_name: backend
+    build: .
+    image: backend
+    environment:
+      - DB_HOSTNAME=db
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_ECHO=${DB_ECHO}
+      - SCRAPING_INTERVAL_SECONDS=${SCRAPING_INTERVAL_SECONDS}
+      - BOT_TOKEN=${BOT_TOKEN}
+    command: bash -c "alembic upgrade head && python src/main.py"
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    restart: always
+
+# volumes:
+#   pgdata:
