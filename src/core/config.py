@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     bot_token: str
 
+    scraping_interval_seconds: int = 60
+
     model_config = SettingsConfigDict(
         env_file=f"{os.path.dirname(os.path.abspath(__file__))}/../../.env",
         extra="ignore",

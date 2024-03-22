@@ -1,4 +1,6 @@
 import asyncio
+
+from core.config import settings
 from scraper.services import get_latest_articles, refresh_db_articles
 from bot.services import send_new_article, get_articles_from_db
 
@@ -13,7 +15,7 @@ async def check_for_updates():
         continue
 
 
-async def periodic_scraping(interval_sec=60):
+async def periodic_scraping(interval_sec=settings.scraping_interval_seconds):
     while True:
         await asyncio.sleep(interval_sec)
         await check_for_updates()
