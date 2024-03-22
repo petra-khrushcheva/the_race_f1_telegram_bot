@@ -1,3 +1,4 @@
+import asyncio
 from scraper.services import get_latest_articles, refresh_db_articles
 from bot.services import send_new_article, get_articles_from_db
 
@@ -10,3 +11,9 @@ async def check_for_updates():
             await refresh_db_articles(slug)
             await send_new_article(slug)
         continue
+
+
+async def periodic_scraping(interval_sec=60):
+    while True:
+        await asyncio.sleep(interval_sec)
+        await check_for_updates()
