@@ -1,11 +1,10 @@
 import aiohttp
 
 from bs4 import BeautifulSoup
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, delete
 
 from scraper.models import Article
-from core.database import get_session
+from core.database import async_session
 
 
 URL = "https://www.the-race.com/formula-1/"
@@ -26,22 +25,29 @@ async def get_latest_articles():
 
 
 async def save_article_to_db(slug):
-    session: AsyncSession = get_session()
-    new_article = Article(slug=slug)
-    session.add(new_article)
-    await session.commit()
+    async with async_session() as session:
+        new_article = Article(slug=slug)
+        session.add(new_article)
+        await session.commit()
 
 
 async def refresh_db_articles(slug):
-    session: AsyncSession = get_session()
-    oldest_article = await session.execute(
-        select(Article).order_by(Article.created_at).limit(1)
-    )
-    await session.delete(oldest_article)
-    await save_article_to_db(slug=slug)
+    async with async_session() as session:
+        oldest_article = (await session.execute(
+            select(Article).order_by(Article.created_at).limit(1)
+        )).scalar_one()
+        await session.delete(oldest_article)
+        await session.commit()
+        await save_article_to_db(slug=slug)
 
 
 async def initial_scraping():
     slugs = await get_latest_articles()
     for slug in slugs:
         await save_article_to_db(slug=slug)
+
+
+async def delete_all_articles():
+    async with async_session() as session:
+        await session.execute(delete(Article))
+        await session.commit()
