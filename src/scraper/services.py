@@ -13,15 +13,16 @@ URL = "https://www.the-race.com/formula-1/"
 
 async def get_latest_articles():
     async with aiohttp.ClientSession() as session:
-        response = await session.get(url=URL)
-    soup = BeautifulSoup(response.text, "lxml")
-    articles = soup.find("div", class_="archive-width").find_all(
-        class_="entry-title"
-    )
-    slugs = [
-        article.find("a").get("href").split("/")[-2] for article in articles
-    ][::-1]
-    return slugs
+        async with session.get(url=URL) as response:
+            soup = BeautifulSoup(await response.text(), "lxml")
+            articles = soup.find("div", class_="archive-width").find_all(
+                class_="entry-title"
+            )
+            slugs = [
+                article.find("a").get("href").split("/")[-2]
+                for article in articles
+            ][::-1]
+            return slugs
 
 
 async def save_article_to_db(slug):
