@@ -1,12 +1,12 @@
 import asyncio
 
-from aiogram.types import Message
 from aiogram.exceptions import TelegramForbiddenError
+from aiogram.types import Message
 from aiogram.utils.markdown import hlink
 from sqlalchemy import Result, select
 
-from bot.models import ChatID
 from bot.main import bot
+from bot.models import ChatID
 from core.database import async_session
 from scraper.models import Article
 

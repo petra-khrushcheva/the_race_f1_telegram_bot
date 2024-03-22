@@ -1,10 +1,10 @@
 from aiogram import Dispatcher
-from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.exceptions import TelegramForbiddenError
+from aiogram.filters import Command, CommandStart
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from bot.services import save_chat_id_to_db, send_initial_articles
-from scraper.services import initial_scraping, delete_all_articles
+from scraper.services import delete_all_articles, initial_scraping
 
 dp = Dispatcher()
 dp.startup.register(initial_scraping)

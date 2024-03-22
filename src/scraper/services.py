@@ -1,11 +1,9 @@
 import aiohttp
-
 from bs4 import BeautifulSoup
-from sqlalchemy import select, delete
+from sqlalchemy import delete, select
 
-from scraper.models import Article
 from core.database import async_session
-
+from scraper.models import Article
 
 URL = "https://www.the-race.com/formula-1/"
 
@@ -33,9 +31,11 @@ async def save_article_to_db(slug):
 
 async def refresh_db_articles(slug):
     async with async_session() as session:
-        oldest_article = (await session.execute(
-            select(Article).order_by(Article.created_at).limit(1)
-        )).scalar_one()
+        oldest_article = (
+            await session.execute(
+                select(Article).order_by(Article.created_at).limit(1)
+            )
+        ).scalar_one()
         await session.delete(oldest_article)
         await session.commit()
         await save_article_to_db(slug=slug)

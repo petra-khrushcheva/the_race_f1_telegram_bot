@@ -6,9 +6,9 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from bot.models import ChatID  # noqa
 from core.basemodels import Base
 from core.config import settings
-from bot.models import ChatID  # noqa
 from scraper.models import Article  # noqa
 
 # this is the Alembic Config object, which provides
