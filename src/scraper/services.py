@@ -1,5 +1,6 @@
-import aiohttp
 import logging
+
+import aiohttp
 from bs4 import BeautifulSoup
 from sqlalchemy import delete, select
 
