@@ -16,8 +16,7 @@ async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with "/start" command
     """
-    chat_id = message.chat.id
-    await save_chat_id_to_db(chat_id=chat_id)
+    await save_chat_id_to_db(chat_id=message.chat.id)
     await send_initial_articles(message=message)
 
 
