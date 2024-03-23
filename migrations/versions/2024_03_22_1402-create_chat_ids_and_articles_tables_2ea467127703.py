@@ -1,7 +1,7 @@
 """create chat_ids and articles tables
 
 Revision ID: 2ea467127703
-Revises: 
+Revises:
 Create Date: 2024-03-22 14:02:54.725111
 
 """
