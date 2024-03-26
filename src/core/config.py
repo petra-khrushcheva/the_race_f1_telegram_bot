@@ -1,6 +1,7 @@
 import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import SecretStr
 
 
 class Settings(BaseSettings):
@@ -11,7 +12,7 @@ class Settings(BaseSettings):
     db_username: str
     db_echo: bool
 
-    bot_token: str
+    bot_token: SecretStr
 
     scraping_interval_seconds: int = 60
 
