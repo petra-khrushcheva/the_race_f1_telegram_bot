@@ -2,8 +2,8 @@ import asyncio
 import logging
 import sys
 
+from bot import bot
 from bot.dispatcher import dp
-from bot.main import bot
 from scraper.main import periodic_scraping
 
 
