@@ -16,7 +16,7 @@ Pydantic settings 2.2
 - Добавьте описание и команды для своего бота из файла [bot_texts.txt](https://github.com/petra-khrushcheva/the_race_f1_telegram_bot/blob/main/bot_texts.txt).
 - Клонируйте проект:
 ```
-git@github.com:petra-khrushcheva/the_race_f1_telegram_bot.git
+git clone git@github.com:petra-khrushcheva/the_race_f1_telegram_bot.git
 ``` 
 - Перейдите в директорию the_race_f1_telegram_bot:
 ```
