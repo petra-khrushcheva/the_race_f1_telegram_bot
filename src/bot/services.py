@@ -1,14 +1,14 @@
 import asyncio
 
+from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError
 from aiogram.types import Message
 from aiogram.utils.markdown import hlink
 from sqlalchemy import Result, delete, select
 
-from bot.main import bot
 from bot.models import ChatID
-from core.database import async_session
-from scraper.models import Article
+from core import async_session
+from scraper import Article
 
 
 async def save_chat_id_to_db(chat_id: int):
@@ -31,9 +31,7 @@ async def get_chat_ids():
 
 async def delete_chat_id(chat_id):
     async with async_session() as session:
-        await session.execute(
-            delete(ChatID).where(ChatID.chat_id == chat_id)
-        )
+        await session.execute(delete(ChatID).where(ChatID.chat_id == chat_id))
         await session.commit()
 
 
@@ -45,7 +43,7 @@ async def get_articles_from_db():
         return result.scalars().all()
 
 
-async def send_article(chat_id, slug):
+async def send_article(chat_id: int | str, slug: str, bot: Bot):
     try:
         await bot.send_message(
             chat_id=chat_id,
@@ -60,11 +58,11 @@ async def send_article(chat_id, slug):
 async def send_initial_articles(message: Message):
     slugs = await get_articles_from_db()
     for slug in slugs:
-        await send_article(chat_id=message.chat.id, slug=slug)
+        await send_article(chat_id=message.chat.id, slug=slug, bot=message.bot)
 
 
-async def send_new_article(slug):
+async def send_new_article(slug: str, bot: Bot):
     chat_ids = await get_chat_ids()
     for chat_id in chat_ids:
-        await send_article(chat_id=chat_id, slug=slug)
+        await send_article(chat_id=chat_id, slug=slug, bot=bot)
         await asyncio.sleep(0.05)

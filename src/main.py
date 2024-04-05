@@ -2,13 +2,12 @@ import asyncio
 import logging
 import sys
 
-from bot import bot
-from bot.dispatcher import dp
-from scraper.main import periodic_scraping
+from bot import bot, dp
+from scraper.services import periodic_scraping
 
 
 async def main() -> None:
-    _ = asyncio.create_task(periodic_scraping())
+    asyncio.create_task(periodic_scraping(bot=bot))
     await dp.start_polling(bot)
 
 

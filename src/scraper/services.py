@@ -1,10 +1,13 @@
+import asyncio
 import logging
 
 import aiohttp
+from aiogram import Bot
 from bs4 import BeautifulSoup
 from sqlalchemy import delete, select
 
-from core.database import async_session
+from bot.services import get_articles_from_db, send_new_article
+from core import async_session, settings
 from scraper.models import Article
 
 URL = "https://www.the-race.com/formula-1/"
@@ -56,3 +59,21 @@ async def delete_all_articles():
     async with async_session() as session:
         await session.execute(delete(Article))
         await session.commit()
+
+
+async def check_for_updates(bot: Bot):
+    new_articles = await get_latest_articles()
+    old_articles = await get_articles_from_db()
+    for slug in new_articles:
+        if slug not in old_articles:
+            await refresh_db_articles(slug)
+            await send_new_article(slug=slug, bot=bot)
+        continue
+
+
+async def periodic_scraping(
+    bot: Bot, interval_sec=settings.scraping_interval_seconds
+):
+    while True:
+        await asyncio.sleep(interval_sec)
+        await check_for_updates(bot=bot)

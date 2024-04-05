@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.basemodels import Base
+from core import Base
 
 
 class ChatID(Base):

@@ -1,17 +1,14 @@
-from aiogram import Dispatcher
+from aiogram import Router
 from aiogram.exceptions import TelegramForbiddenError
 from aiogram.filters import Command, CommandStart
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from bot.services import save_chat_id_to_db, send_initial_articles
-from scraper.services import delete_all_articles, initial_scraping
 
-dp = Dispatcher()
-dp.startup.register(initial_scraping)
-dp.shutdown.register(delete_all_articles)
+router = Router()
 
 
-@dp.message(CommandStart())
+@router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with "/start" command
@@ -20,7 +17,7 @@ async def command_start_handler(message: Message) -> None:
     await send_initial_articles(message=message)
 
 
-@dp.message(Command("help"))
+@router.message(Command("help"))
 async def command_help_handler(message: Message) -> None:
     """
     This handler receives messages with "/help" command
@@ -34,7 +31,7 @@ async def command_help_handler(message: Message) -> None:
         pass
 
 
-@dp.message()
+@router.message()
 async def any_message_handler(message: Message) -> None:
     """
     This handler receives any other messages
