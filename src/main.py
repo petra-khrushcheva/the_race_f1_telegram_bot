@@ -7,7 +7,7 @@ from scraper.services import periodic_scraping
 
 
 async def main() -> None:
-    asyncio.create_task(periodic_scraping(bot=bot))
+    asyncio.create_task(periodic_scraping(bot))
     await dp.start_polling(bot)
 
 

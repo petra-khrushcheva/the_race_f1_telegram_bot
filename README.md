@@ -22,9 +22,9 @@ git clone git@github.com:petra-khrushcheva/the_race_f1_telegram_bot.git
 ```
 cd the_race_f1_telegram_bot
 ``` 
-- Cоздайте .env файл по [образцу](https://github.com/petra-khrushcheva/the_race_f1_telegram_bot/blob/main/.env.example).
+- Cоздайте переменные окружения по [образцу](https://github.com/petra-khrushcheva/the_race_f1_telegram_bot/blob/main/.env.example).
 - Запустите Docker-compose:
 ```
 docker compose -f docker-compose-dev.yml up
 ``` 
-Готово! Lights out and away we go!
+Готово! It's lights out and away we go!
